@@ -151,10 +151,24 @@ CREATE OR REPLACE VIEW PassedCourses AS(
 	);
 
 CREATE OR REPLACE VIEW Registrations AS(
-	
+	(SELECT student, course, 'waiting' as status
+	FROM WaitingList)
+	UNION
+	(SELECT student, course, 'registered' as status
+	FROM Registered)
 	);
-	
--- Registrations(student, course, status)
+
+CREATE OR REPLACE VIEW UnreadMandatory AS(
+	(SELECT Students.idnr AS student, program, course
+	FROM Students
+	NATURAL JOIN MandatoryProgram)
+	UNION
+	(SELECT student, StudentBranches.branch, course
+	FROM StudentBranches
+	JOIN MandatoryBranch
+	ON StudentBranches.branch = MandatoryBranch.branch)
+	--ORDER BY student
+	);
 
 
 
