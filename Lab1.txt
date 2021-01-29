@@ -142,7 +142,7 @@ CREATE OR REPLACE VIEW FinishedCourses AS(
 	ON (Taken.course = Courses.code)
 	);
 
-CREATE OR REPLACE VIEW FinishedCourses AS(
+CREATE OR REPLACE VIEW PassedCourses AS(
 	SELECT student, course, credits
 	FROM Taken
 	JOIN Courses
