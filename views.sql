@@ -15,14 +15,8 @@ CREATE VIEW PassedCourses AS
     WHERE tk.grade IN ('3','4','5');
 
 CREATE VIEW Registrations AS
-    SELECT *
-    FROM
-  (SELECT *
-    FROM Registered
+    SELECT student, course, 'waiting' AS status
+    FROM WaitingList
     UNION
-    SELECT student, course
-    FROM WaitingList) r
-    LEFT OUTER JOIN WaitingList wl ON (r.student = wl.student AND r.course = wl.course);
-
-
--- Work in progress
+    SELECT student, course, 'registered' AS status
+    FROM Registered;
