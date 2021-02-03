@@ -303,7 +303,7 @@ CREATE OR REPLACE VIEW PathToGraduation AS(
 			AND PC.course = RB.course
 			GROUP BY SB.student, RB.course, PC.credits) AS Recommended
 			ON Students.idnr = Recommended.student
-		) AS thisNameIsUnnecessary
+		) AS thisNameIsUnnecessaryButNeeded
 	)
 	
 	SELECT student, totalCredits, mandatoryLeft, mathCredits, researchCredits, seminarCourses,
@@ -318,8 +318,4 @@ CREATE OR REPLACE VIEW PathToGraduation AS(
 		AS qualified
 	FROM pathGrad
 	)
-
-
-
-
 
