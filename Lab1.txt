@@ -159,16 +159,95 @@ CREATE OR REPLACE VIEW Registrations AS(
 	);
 
 CREATE OR REPLACE VIEW UnreadMandatory AS(
-	(SELECT Students.idnr AS student, program, course
-	FROM Students
-	NATURAL JOIN MandatoryProgram)
-	UNION
-	(SELECT student, StudentBranches.branch, course
-	FROM StudentBranches
-	JOIN MandatoryBranch
-	ON StudentBranches.branch = MandatoryBranch.branch)
-	--ORDER BY student
+	SELECT student, course
+	FROM ((	SELECT Students.idnr AS student, course -- Students.program
+		FROM Students
+		JOIN MandatoryProgram ON Students.program = MandatoryProgram.program)
+		UNION
+		(SELECT student, course
+		FROM StudentBranches
+		LEFT OUTER JOIN MandatoryBranch
+		ON (StudentBranches.branch = MandatoryBranch.branch)
+		AND (StudentBranches.program = MandatoryBranch.program))) AS mandatoryCourses
+	WHERE (student, course) NOT IN (SELECT student, course FROM PassedCourses)
 	);
+
+CREATE OR REPLACE VIEW PathToGraduation AS(
+	WITH pathGrad AS (
+		SELECT idnr AS Student, totalCredits, mandatoryLeft, mathCredits, researchCredits, seminarCourses, recommendedCredits
+		FROM(	SELECT *
+			FROM Students
+
+			LEFT OUTER JOIN
+			
+			(SELECT student, SUM(credits) AS totalCredits
+			FROM passedcourses
+			GROUP BY student) AS Total
+			ON Students.idnr = Total.student
+			
+			LEFT JOIN
+			
+			(SELECT student, course AS mandatoryLeft
+			FROM unreadmandatory) AS Mandatory
+			ON Students.idnr = Mandatory.student
+
+			LEFT OUTER JOIN
+
+			(SELECT student, SUM(credits) AS mathCredits
+			FROM PassedCourses
+			LEFT OUTER JOIN Classified
+			ON PassedCourses.course = Classified.course
+			WHERE classification = 'math'
+			GROUP BY student, PassedCourses.course, Classified.course,
+			Classified.classification) AS Math
+			ON Students.idnr = Math.student
+
+			LEFT OUTER JOIN
+
+			(SELECT student, SUM(credits) AS researchCredits
+			FROM PassedCourses
+			LEFT OUTER JOIN Classified
+			ON PassedCourses.course = Classified.course
+			WHERE classification = 'research'
+			GROUP BY student, PassedCourses.course, Classified.course,
+			Classified.classification) AS Research
+			ON Students.idnr = Research.student
+
+			LEFT OUTER JOIN
+
+			(SELECT student, COUNT(classification) AS seminarCourses
+			FROM Classified
+			LEFT OUTER JOIN PassedCourses
+			ON Classified.course = PassedCourses.course
+			WHERE classification = 'seminar'
+			GROUP BY student) AS Seminar
+			ON Students.idnr = Seminar.student
+
+			LEFT OUTER JOIN
+
+			(SELECT SB.student, PC.credits AS recommendedCredits
+			FROM StudentBranches SB
+			JOIN RecommendedBranch RB
+			ON (RB.branch, RB.program) = (SB.branch, SB.program)
+			JOIN PassedCourses PC
+			ON SB.student = PC.student
+			AND PC.course = RB.course
+			GROUP BY SB.student, RB.course, PC.credits) AS Recommended
+			ON Students.idnr = Recommended.student
+		) AS thisNameIsUnnecessary
+	)
+	SELECT student, totalCredits, mandatoryLeft, mathCredits, researchCredits, seminarCourses,
+	CASE WHEN student NOT IN (SELECT student FROM UnreadMandatory)
+		AND recommendedCredits >= 10
+		AND mathCredits >= 20
+		AND researchCredits >= 10
+		AND seminarCourses >= 1
+		THEN TRUE
+		ELSE FALSE
+		END
+		AS qualified
+	FROM pathGrad
+	)
 
 
 
