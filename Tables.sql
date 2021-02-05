@@ -89,7 +89,3 @@ CREATE TABLE WaitingList(
     PRIMARY KEY(student, course)
 );
 
-
-
-
-
