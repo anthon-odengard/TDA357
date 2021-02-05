@@ -41,7 +41,7 @@ CREATE VIEW PathToGraduation(
         FROM Students
     ),
     PassedCredits AS (
-        SELECT student, sum(credits)
+        SELECT student, sum(credits) AS totalCredits
         FROM PassedCourses
         GROUP BY student
     ),
@@ -85,7 +85,7 @@ CREATE VIEW PathToGraduation(
         GROUP BY student, classification
     )
     SELECT st.idnmr AS student, 
-    COALESCE(mnp.mandatoryLeft, 0) AS mandatoryLeft, 
+    COALESCE(pc.totalCredits, 0) AS totalCredits, 
     COALESCE(mnp.mandatoryLeft, 0) AS mandatoryLeft, 
     COALESCE(mc.mathCredits,0) AS mathCredits, 
     COALESCE(rc.researchCredits, 0) AS researchCredits, 
@@ -95,5 +95,5 @@ CREATE VIEW PathToGraduation(
     LEFT OUTER JOIN MandatoryNotPassed mnp on mnp.student = st.idnmr
     LEFT OUTER JOIN MathCredits mc ON st.idnmr = mc.student
     LEFT OUTER JOIN ResearchCredits rc ON rc.student = st.idnmr
-    LEFT OUTER JOIN SeminarCourses sc ON st.idnmr = sc.student;
-)
+    LEFT OUTER JOIN SeminarCourses sc ON st.idnmr = sc.student
+);
