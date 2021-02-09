@@ -198,7 +198,7 @@ CREATE TABLE WaitingList(
 ----------------------------------------------------------------------------------------
 
 CREATE OR REPLACE VIEW BasicInformation AS(
-	SELECT idnr, name, login, Students.program, COALESCE(branch,'0') AS branch
+	SELECT idnr, name, login, Students.program, COALESCE(branch,'') AS branch
 	FROM Students
 	FULL JOIN StudentBranches
 	ON (Students.idnr = StudentBranches.student)
