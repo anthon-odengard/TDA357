@@ -1,9 +1,24 @@
+CREATE TABLE Department(
+    name VARCHAR PRIMARY KEY,
+    abbreviation VARCHAR UNIQUE
+    );
+
+CREATE TABLE Program(
+    name VARCHAR PRIMARY KEY,
+    abbreviation VARCHAR  NOT NULL
+);
+
+CREATE TABLE ProgramHost(
+    program VARCHAR REFERENCES Program(name),
+    department VARCHAR REFERENCES Department(name),
+    PRIMARY KEY(program, department)
+);
 
 CREATE TABLE Students(
-    idnmr BIGINT NOT NULL PRIMARY KEY CHECK(idnmr BETWEEN 0 AND 9999999999),
+    idnr BIGINT NOT NULL PRIMARY KEY CHECK(idnr BETWEEN 0 AND 9999999999),
     name TEXT NOT NULL,
-    login VARCHAR NOT NULL,
-    program VARCHAR NOT NULL
+    login VARCHAR UNIQUE,
+    program VARCHAR NOT NULL REFERENCES Program(name)
 );
 
 CREATE TABLE Branches(
@@ -25,7 +40,7 @@ CREATE TABLE LimitedCourses(
 );
 
 CREATE TABLE StudentBranches(
-    student BIGINT REFERENCES Students(idnmr) PRIMARY KEY,
+    student BIGINT REFERENCES Students(idnr) PRIMARY KEY,
     branch VARCHAR NOT NULL,
     program TEXT NOT NULL,
     FOREIGN KEY(branch, program) REFERENCES Branches
@@ -64,22 +79,23 @@ CREATE TABLE RecommendedBranch(
 );
 
 CREATE TABLE Registered(
-    student BIGINT REFERENCES Students(idnmr),
+    student BIGINT REFERENCES Students(idnr),
     course CHAR(6) REFERENCES Courses(code),
     PRIMARY KEY(student, course)
 );
 
 CREATE TABLE Taken(
-    student BIGINT REFERENCES Students(idnmr),
+    student BIGINT REFERENCES Students(idnr),
     course CHAR(6) REFERENCES Courses(code),
     grade CHAR(1) NOT NULL CHECK(grade IN ('U', '3', '4', '5') ),
     PRIMARY KEY(student, course)
 );
 
 CREATE TABLE WaitingList(
-    student BIGINT REFERENCES Students(idnmr),
+    student BIGINT REFERENCES Students(idnr),
     course CHAR(6) REFERENCES Courses(code),
-    position SERIAL NOT NULL,
-    PRIMARY KEY(student, course)
+    position SERIAL,
+    PRIMARY KEY(student, course),
+    UNIQUE(course, position)
 );
 

@@ -1,7 +1,7 @@
 CREATE VIEW BasicInformation AS
-    SELECT st.idnmr, st.name, st.login, st.program, sb.branch
+    SELECT st.idnr, st.name, st.login, st.program, sb.branch
     FROM Students st 
-    LEFT OUTER JOIN StudentBranches sb ON st.idnmr = sb.student;
+    LEFT OUTER JOIN StudentBranches sb ON st.idnr = sb.student;
 
 CREATE VIEW FinishedCourses AS
     SELECT tk.student, tk.course, tk.grade, c.credits
@@ -25,7 +25,7 @@ CREATE VIEW Registrations AS
 CREATE View UnreadMandatory AS
     SELECT *
     FROM(
-    SELECT st.idnmr AS student, mp.course
+    SELECT st.idnr AS student, mp.course
     FROM Students st
     JOIN MandatoryProgram mp ON st.program = mp.program
     UNION
@@ -37,7 +37,7 @@ CREATE View UnreadMandatory AS
 
 CREATE VIEW PathToGraduation(
     WITH Student(student) AS (
-        SELECT Students.idnmr
+        SELECT Students.idnr
         FROM Students
     ),
     PassedCredits AS (
@@ -53,13 +53,13 @@ CREATE VIEW PathToGraduation(
         FROM MandatoryBranch)),
     -- Joining student with mandatory course 
     -- thats not in passed course
-    MandatoryNotPassed AS(SELECT st.idnmr AS Student, COUNT(course) AS mandatoryLeft
+    MandatoryNotPassed AS(SELECT st.idnr AS Student, COUNT(course) AS mandatoryLeft
         FROM Students st
         LEFT OUTER JOIN MandatoryCourses mc ON mc.program = st.program
-        WHERE (st.idnmr, mc.course) NOT IN (SELECT student, course
+        WHERE (st.idnr, mc.course) NOT IN (SELECT student, course
         FROM PassedCourses)
-        GROUP BY st.idnmr
-        ORDER BY st.idnmr
+        GROUP BY st.idnr
+        ORDER BY st.idnr
     ),
     PassedClassified AS (
         SELECT * 
@@ -83,17 +83,39 @@ CREATE VIEW PathToGraduation(
         FROM PassedClassified 
         WHERE (classification = 'seminar')
         GROUP BY student, classification
-    )
-    SELECT st.idnmr AS student, 
+    ),
+    RecommendedCredits AS (SELECT sb.student, rb.branch, SUM(cs.credits) AS recommendedCredits
+    FROM StudentBranches sb
+    LEFT OUTER JOIN RecommendedBranch rb ON sb.branch = rb.branch
+    AND sb.program = rb.program
+    LEFT OUTER JOIN Courses cs ON cs.code = rb.course
+    GROUP BY sb.student, rb.branch
+    ),
+    Qualified AS (SELECT Student.student,
+    CASE
+        WHEN Student.student NOT IN(SELECT student FROM MandatoryNotPassed)
+        AND 
+        Student.student IN(
+            SELECT student 
+            FROM RecommendedCredits 
+            WHERE recommendedcredits >=10)
+        THEN TRUE
+        END
+        AS qualified
+    FROM Student
+        )
+    SELECT st.idnr AS student, 
     COALESCE(pc.totalCredits, 0) AS totalCredits, 
     COALESCE(mnp.mandatoryLeft, 0) AS mandatoryLeft, 
     COALESCE(mc.mathCredits,0) AS mathCredits, 
     COALESCE(rc.researchCredits, 0) AS researchCredits, 
-    COALESCE(sc.seminarCourses,0) AS seminarCourses
+    COALESCE(sc.seminarCourses,0) AS seminarCourses,
+    COALESCE(qf.qualified, FALSE) AS qualified
     FROM Students st
-    LEFT OUTER JOIN PassedCredits pc ON pc.student = st.idnmr
-    LEFT OUTER JOIN MandatoryNotPassed mnp on mnp.student = st.idnmr
-    LEFT OUTER JOIN MathCredits mc ON st.idnmr = mc.student
-    LEFT OUTER JOIN ResearchCredits rc ON rc.student = st.idnmr
-    LEFT OUTER JOIN SeminarCourses sc ON st.idnmr = sc.student
+    LEFT OUTER JOIN PassedCredits pc ON pc.student = st.idnr
+    LEFT OUTER JOIN MandatoryNotPassed mnp on mnp.student = st.idnr
+    LEFT OUTER JOIN MathCredits mc ON st.idnr = mc.student
+    LEFT OUTER JOIN ResearchCredits rc ON rc.student = st.idnr
+    LEFT OUTER JOIN SeminarCourses sc ON st.idnr = sc.student
+    LEFT OUTER JOIN Qualified qf ON st.idnr = qf.student
 );
