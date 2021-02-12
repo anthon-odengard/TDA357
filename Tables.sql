@@ -1,16 +1,10 @@
 
--- Student table
 CREATE TABLE Students(
     idnmr BIGINT NOT NULL PRIMARY KEY CHECK(idnmr BETWEEN 0 AND 9999999999),
     name TEXT NOT NULL,
     login VARCHAR NOT NULL,
     program VARCHAR NOT NULL
 );
--- Test primary key and constrain
-INSERT INTO Students
-VALUES(1923738191231232);
-
--- Branches Table
 
 CREATE TABLE Branches(
     name TEXT NOT NULL,
