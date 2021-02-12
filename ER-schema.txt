@@ -1,4 +1,5 @@
-Department(_name_, _abbreviation_)
+Department(_name_, abbreviation)
+	abbreviation unique
 
 Program(_name_, abbreviation)
 
@@ -8,6 +9,7 @@ ProgramHost(_name_, _department_)
 
 Students(_idnr_, name, login, program)
 	program → Program.name
+	login unique
 
 
 Branches(_name_, _program_)
@@ -53,3 +55,9 @@ Taken(_student_, _course_, grade)
 WaitingList(_student_, _course_, position)
 	student → Students.idnr
 	course → Limitedcourses.code
+	(course, position) unique
+
+Prerequisite(_course_, reqcourse)
+	course → Course.code
+	reqcourse → Course.code
+	
