@@ -1,0 +1,104 @@
+----------------------------------------------------------------------------------------
+------------------------------- FUNCTIONAL DEPENDENCIES --------------------------------
+----------------------------------------------------------------------------------------
+
+
+Domain(dName, dAbbr, pName, pAbbr, bName, idnr, sName, login, code, cName, credits, capacity, classification, position, grade, prereq)
+
+idnr -> sName, login, pName
+
+code -> dName, cName, credits, classification, capacity, prereq
+
+dName -> dAbbr
+
+pName -> pAbbr
+
+idnr, code -> position
+
+idnr, code -> grade
+
+idnr, pName -> bName
+
+
+----------------------------------------------------------------------------------------
+
+
+1. Decompose domain using dName -> dAbbr
+
+
+{dName}+ = {dName, dAbbr}
+
+
+Departments(_dName_, dAbbr)
+	dAbbr unique
+
+
+R1(dName, pName, pAbbr, bName, idnr, sName, login, code, cName, credits, capacity, classification, position, grade, prereq)
+
+
+----------------------------------------------------------------------------------------
+
+
+2. Decompose R1 using code -> cName
+
+
+{code}+ = {code, dName, cName, credits, capacity, classification, prereq}
+
+
+Courses(_code_, dName, cName, credits, capacity, classification, prereq)
+
+
+R2(code, pName, pAbbr, bName, idnr, sName, login, position, grade)
+
+
+----------------------------------------------------------------------------------------
+
+
+3. Decompose R2 using pName -> pAbbr
+
+
+{pName}+ = {pName, pAbbr}
+
+
+Programs(_pName_, pAbbr)
+
+
+R3(code, pName, bName, idnr, sName, login, position, grade)
+
+
+----------------------------------------------------------------------------------------
+
+
+4. Decompose R3 using idnr -> sName
+
+
+{idnr}+ = {idnr, pName, bName, sName, login}
+
+
+Students(_idnr_, pName, bName, sName, login)
+	(idnr, pName, bName) unique
+	login unique
+
+
+R4(code, idnr, position, grade)
+
+
+----------------------------------------------------------------------------------------
+
+
+5. Decompose R4 using idnr, code -> grade
+
+
+{idnr, code}+ = {idnr, code, grade, position}
+
+
+TakenAndWaitingList(_idnr_, _code_, grade, position)
+
+
+=>	Taken(_idnr_, _code_, grade)
+
+	WaitingList(_idnr_, _code_, position)
+		(code, position) unique
+
+
+

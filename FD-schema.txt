@@ -1,0 +1,34 @@
+----------------------------------------------------------------------------------------
+--------------------- FUNCTIONAL DEPENDENCIES - RELATIONAL SCHEMA ----------------------
+----------------------------------------------------------------------------------------
+
+
+Departments(_dName_, dAbbr)
+	dAbbr unique
+
+
+Courses(_code_, dName, cName, credits, capacity, classification, prereq)
+	dName -> Departments.dName
+
+
+Programs(_pName_, pAbbr)
+
+
+Students(_idnr_, pName, bName, sName, login)
+	pName -> Programs.pName
+	(idnr, pName, bName) unique
+	login unique
+
+
+Taken(_idnr_, _code_, grade)
+	idnr -> Students.idnr
+	code -> Courses.code
+
+
+WaitingList(_idnr_, _code_, position)
+	idnr -> Students.idnr
+	code -> Courses.code
+	(code, position) unique
+
+
+
