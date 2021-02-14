@@ -5,13 +5,13 @@
 
 Domain(dName, dAbbr, pName, pAbbr, bName, idnr, sName, login, code, cName, credits, capacity, classification, position, grade, prereq)
 
-idnr -> sName, login, pName
+idnr -> sName, login, pName, bName
 
 code -> dName, cName, credits, classification, capacity, prereq
 
 dName -> dAbbr
 
-pName -> pAbbr
+pName -> pAbbr, dName
 
 idnr, code -> position
 
@@ -94,11 +94,10 @@ R4(code, idnr, position, grade)
 
 TakenAndWaitingList(_idnr_, _code_, grade, position)
 
-
-=>	Taken(_idnr_, _code_, grade)
+Note that this is merge of
+	Taken(_idnr_, _code_, grade)
 
 	WaitingList(_idnr_, _code_, position)
 		(code, position) unique
-
 
 
