@@ -20,15 +20,9 @@ Students(_idnr_, pName, bName, sName, login)
 	login unique
 
 
-Taken(_idnr_, _code_, grade)
-	idnr -> Students.idnr
-	code -> Courses.code
-
-
-WaitingList(_idnr_, _code_, position)
+TakenAndWaitingList(_idnr_, _code_, grade, position)
 	idnr -> Students.idnr
 	code -> Courses.code
 	(code, position) unique
-
 
 
