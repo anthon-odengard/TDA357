@@ -9,6 +9,14 @@ INSERT INTO Students VALUES ('4444444444', 'N4', 'ls4', 'Prog1');
 INSERT INTO Students VALUES ('5555555555', 'Nx', 'ls5', 'Prog2');
 INSERT INTO Students VALUES ('6666666666', 'Nx', 'ls6', 'Prog2');
 
+INSERT INTO Department VALUES ('Dep1', 'D1');
+
+INSERT INTO Program VALUES ('Prog1', 'P1');
+INSERT INTO Program VALUES ('Prog2', 'P2');
+
+INSERT INTO ProgramHost VALUES ('Prog1', 'Dep1');
+INSERT INTO ProgramHost VALUES ('Prog2', 'Dep1');
+
 INSERT INTO Courses VALUES ('CCC111', 'C1', 22.5, 'Dep1');
 INSERT INTO Courses VALUES ('CCC222', 'C2', 20,   'Dep1');
 INSERT INTO Courses VALUES ('CCC333', 'C3', 30,   'Dep1');
@@ -62,4 +70,18 @@ INSERT INTO Taken VALUES('5555555555', 'CCC333', '5');
 INSERT INTO Taken VALUES('5555555555', 'CCC444', '5');
 
 
-
+SELECT * FROM Department;
+SELECT * FROM ProgramHost;
+SELECT * FROM Program;
+SELECT * FROM Branches;
+SELECT * FROM Students;
+SELECT * FROM Courses;
+SELECT * FROM LimitedCourses;
+SELECT * FROM Classifications;
+SELECT * FROM StudentBranches;
+SELECT * FROM MandatoryProgram;
+SELECT * FROM MandatoryBranch;
+SELECT * FROM RecommendedBranch;
+SELECT * FROM Registered;
+SELECT * FROM WaitingList;
+SELECT * FROM Taken;

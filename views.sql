@@ -94,12 +94,28 @@ CREATE VIEW PathToGraduation(
     Qualified AS (SELECT Student.student,
     CASE
         WHEN Student.student NOT IN(SELECT student FROM MandatoryNotPassed)
-        AND 
-        Student.student IN(
+        AND Student.student IN(
             SELECT student 
             FROM RecommendedCredits 
-            WHERE recommendedcredits >=10)
+            WHERE recommendedcredits >=10
+            )
+        AND Student.student IN(
+            SELECT student 
+            FROM MathCredits 
+            WHERE mathCredits >=20
+            )
+        AND Student.student IN(
+            SELECT student 
+            FROM ResearchCredits 
+            WHERE researchCredits >=10
+            )
+        AND Student.student IN(
+            SELECT student 
+            FROM SeminarCourses 
+            WHERE seminarCourses >=1
+            )
         THEN TRUE
+        ELSE FALSE
         END
         AS qualified
     FROM Student
@@ -118,4 +134,5 @@ CREATE VIEW PathToGraduation(
     LEFT OUTER JOIN ResearchCredits rc ON rc.student = st.idnr
     LEFT OUTER JOIN SeminarCourses sc ON st.idnr = sc.student
     LEFT OUTER JOIN Qualified qf ON st.idnr = qf.student
+
 );

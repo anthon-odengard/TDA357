@@ -40,10 +40,11 @@ CREATE TABLE LimitedCourses(
 );
 
 CREATE TABLE StudentBranches(
-    student BIGINT REFERENCES Students(idnr) PRIMARY KEY,
+    student BIGINT PRIMARY KEY,
     branch VARCHAR NOT NULL,
     program TEXT NOT NULL,
-    FOREIGN KEY(branch, program) REFERENCES Branches
+    FOREIGN KEY(branch, program) REFERENCES Branches,
+    FOREIGN KEY(student, program) REFERENCES Students(idnr,program)
 );
 
 CREATE TABLE Classifications(
