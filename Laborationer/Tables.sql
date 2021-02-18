@@ -18,7 +18,8 @@ CREATE TABLE Students(
     idnr BIGINT NOT NULL PRIMARY KEY CHECK(idnr BETWEEN 0 AND 9999999999),
     name TEXT NOT NULL,
     login VARCHAR UNIQUE,
-    program VARCHAR NOT NULL REFERENCES Program(name)
+    program VARCHAR NOT NULL REFERENCES Program(name),
+    UNIQUE(idnr, program)
 );
 
 CREATE TABLE Branches(
@@ -44,7 +45,7 @@ CREATE TABLE StudentBranches(
     branch VARCHAR NOT NULL,
     program TEXT NOT NULL,
     FOREIGN KEY(branch, program) REFERENCES Branches,
-    FOREIGN KEY(student, program) REFERENCES Students(idnr,program)
+    FOREIGN KEY(student, program) REFERENCES Students(idnr, program)
 );
 
 CREATE TABLE Classifications(
@@ -97,6 +98,14 @@ CREATE TABLE WaitingList(
     course CHAR(6) REFERENCES Courses(code),
     position SERIAL,
     PRIMARY KEY(student, course),
-    UNIQUE(course, position)
+    UNIQUE(position)
+
 );
 
+CREATE TABLE Prerequisites(
+	course CHAR(6) NOT NULL,
+	prerequisites CHAR(6) NOT NULL,
+	PRIMARY KEY (course),
+	FOREIGN KEY (course) REFERENCES Courses,
+	FOREIGN KEY (prerequisites) REFERENCES Courses
+	);

@@ -136,3 +136,5 @@ CREATE VIEW PathToGraduation(
     LEFT OUTER JOIN Qualified qf ON st.idnr = qf.student
 
 );
+
+CREATE VIEW CourseQueuePositions AS();
