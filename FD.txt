@@ -1,0 +1,104 @@
+----------------------------------------------------------------------------------------
+------------------------------- FUNCTIONAL DEPENDENCIES --------------------------------
+----------------------------------------------------------------------------------------
+
+
+Domain(dName, dAbbr, pName, pAbbr, bName, idnr, sName, login, code, cName, credits, capacity, position, grade)
+
+idnr -> sName, login, pName, bName
+
+login -> idnr
+
+code -> dName, cName, credits, capacity
+
+dName -> dAbbr
+
+dAbbr -> dName
+
+pName -> pAbbr
+
+idnr, code -> position, grade
+
+position, code -> idnr
+
+
+----------------------------------------------------------------------------------------
+
+
+1. Decompose domain using dName -> dAbbr
+
+
+{dName}+ = {dName, dAbbr}
+
+
+Departments(_dName_, dAbbr)
+	dAbbr unique
+
+
+R1(dName, pName, pAbbr, bName, idnr, sName, login, code, cName, credits, capacity, position, grade)
+
+
+----------------------------------------------------------------------------------------
+
+
+2. Decompose using code -> cName
+
+{code}+ = {code, cName, credits, capacity, dName}
+
+
+Courses(_code_, cName, credits, capacity, dName)
+
+
+R2(pName, pAbbr, bName, idnr, sName, login, code, position, grade)
+
+
+----------------------------------------------------------------------------------------
+
+
+3. Decompose using pName -> pAbbr
+
+
+{pName} -> {pName, pAbbr}
+
+
+Programs(_pName_, pAbbr)
+
+
+R3(pName, bName, idnr, sName, login, code, position, grade)
+
+
+----------------------------------------------------------------------------------------
+
+
+4. Decompose using idnr -> login
+
+
+{idnr}+ = {idnr, pName, bName, sName, login}
+
+
+Students(_idnr_, pName, bName, sName, login)
+	login unique
+
+
+R4(code, idnr, position, grade)
+
+
+----------------------------------------------------------------------------------------
+
+
+5. Decompose using code, idnr -> position
+
+
+{code, idnr}+ = {code, idnr, position, grade}
+
+
+TakenAndWaitingList(_code_, _idnr_, position, grade)
+
+
+Note that this is merge of
+	Taken(_idnr_, _code_, grade)
+
+	WaitingList(_idnr_, _code_, position)
+		(code, position) unique
+
+
