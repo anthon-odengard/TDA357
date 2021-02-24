@@ -102,7 +102,7 @@ CREATE OR REPLACE FUNCTION course_unreg() RETURNS trigger AS $$
 			IF (queuePos < (SELECT COALESCE(MAX(position),0) FROM WaitingList WHERE course = OLD.course))
 			THEN
 				UPDATE WaitingList
-				SET position = position - 1
+				SET position = position - 1 --FUNKAR EJ
 				WHERE position >= queuePos AND course = OLD.course;
 			
 			RAISE NOTICE 'Student has been removed from waitinglist';
