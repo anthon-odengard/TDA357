@@ -64,6 +64,7 @@ INSTEAD OF INSERT ON Registrations
 
 --DROP FUNCTION course_unreg() CASCADE;
 
+/*
 1. Student is on waiting list
 
 	1.1 Remove without anything else
@@ -78,7 +79,7 @@ INSTEAD OF INSERT ON Registrations
 		2.2.1 If yes -> Register student first in course
 
 		2.2.2 If no -> Do nothing
-
+*/
 
 
 SELECT student FROM WaitingList WHERE student = '1111111111' AND course = 'CCC555'
