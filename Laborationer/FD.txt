@@ -22,7 +22,7 @@ Courses
 {code} -> {cname}
 
 Classified
-{code} -> {classification}
+
 
 LimitedCourses
 {code} -> {capacity}
@@ -62,11 +62,9 @@ CODE
 {code} -> {depname}
 {code} -> {credits}
 {code} -> {cname}
-{code} -> {classification}
 {code} -> {capacity}
-{code} -> {reqcourse}
 
-{code} -> {depname, credits, cname, classification, capacity, reqcourse}
+{code} -> {depname, credits, cname, capacity}
 {position, code} -> {idnr} 
 
 Department
@@ -81,13 +79,15 @@ FD
 
 {idnr} -> {sname, login, program, branch}
 
-{code} -> {depname, credits, cname, classification, capacity, reqcourse}
+{login} -> {idnr}
+
+{code} -> {depname, credits, cname, capacity, reqcourse}
 
 {position, code} -> {idnr} 
 
-{idnr, code} -> {grade}
+{idnr, code} -> {grade, position}
 
 {depname} -> {depabbr}
+{depabbr} ->  {depname}
 
 {progname} -> {progabbr, depname}
-
