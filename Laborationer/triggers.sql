@@ -1,14 +1,13 @@
 -- Triggers for lab3 -- 
 
-CREATE OR REPLACE FUNCTION courseRegistration () RETURNS TRIGGER AS $$
+-- Register student on course
+CREATE OR REPLACE FUNCTION registerCourse () RETURNS TRIGGER AS $$
 BEGIN
-    -- Check if student already registered
     IF (NEW.course IN (SELECT course FROM Registrations WHERE(NEW.student = student) UNION ALL 
     SELECT course FROM WaitingList WHERE(NEW.student = student)))
     THEN RAISE EXCEPTION 'Already registered.';
-    ELSIF()
-    -- If not registered, add either in Reistered or WaitingList
-    -- isCourseFull returns boolean on course satus, for readablility.
+    ELSIF (SELECT PreReqCheck(NEW.student, NEW.course = FALSE))
+    THEN RAISE EXCEPTION 'Missing prerequisites';
     ELSIF (SELECT CourseFull(NEW.course))
     THEN INSERT INTO WaitingList VALUES (NEW.student, NEW.course);
     ELSE INSERT INTO Registered VALUES (NEW.student, NEW.course);
@@ -17,9 +16,17 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
+-- Unregister student from course
+CREATE OR REPLACE FUNCTION unregisterCourse () RETURNS TRIGGER AS $$
+BEGIN
+
+END;
+$$ LANGUAGE plpgsql;
+
+
+-- Check if course full
 CREATE OR REPLACE FUNCTION CourseFull(course CHAR(6)) RETURNS BOOLEAN AS $$
 BEGIN
-    -- Create view containing if course is full or not
     CREATE VIEW CourseStatus AS
         SELECT lc.code, 
         CASE 
@@ -31,27 +38,37 @@ BEGIN
         FROM LimitedCourses lc
         JOIN Registered rg ON (lc.code = rg.course)
         GROUP BY lc.code;
-    -- Conditioning on if course is full or not, true or false return.
     IF(course IN (SELECT code FROM courseStatus) AND (SELECT isfull FROM courseStatus WHERE (code = course)) = TRUE)
     THEN RETURN TRUE;
     ELSE RETURN FALSE;
     END IF;
-    -- Drop view
     DROP VIEW courseStatus;
 END;
 $$ LANGUAGE plpgsql;
 
-CREATE OR REPLACE FUNCTION prereqCheck(course CHAR(6)) RETURNS BOOLEAN AS $$
+-- Crosscheck student prerequisite
+CREATE OR REPLACE FUNCTION PreReqCheck(student BIGINT, course CHAR(6)) RETURNS BOOLEAN AS $$
 BEGIN
-
+    IF(NOT course IN(SELECT course FROM prerequisites))
+    THEN RETURN TRUE;
+    ELSIF(course IN (SELECT course FROM prerequisites) AND course IN
+    (SELECT course FROM Taken.tk WHERE (tk.student = student)))
+    THEN RETURN TRUE;
+    ELSE RETURN FALSE;
+    END IF;
 END;
 $$ LANGUAGE plpgsql;
 
-DROP TRIGGER IF EXISTS insertTrigger
+
+DROP TRIGGER IF EXISTS registerTrigger
 ON Registrations;
 
-CREATE TRIGGER insertTrigger
+CREATE TRIGGER registerTrigger
 INSTEAD OF INSERT ON Registrations
 FOR EACH ROW
-EXECUTE FUNCTION courseRegistration ();
+EXECUTE FUNCTION unregisterCourse ();
 
+CREATE TRIGGER unregisterTrigger
+INSTEAD OF INSERT ON Registrations
+FOR EACH ROW
+EXECUTE FUNCTION registerCourse ();
