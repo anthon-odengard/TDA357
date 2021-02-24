@@ -137,4 +137,16 @@ CREATE VIEW PathToGraduation(
 
 );
 
-CREATE VIEW CourseQueuePositions AS();
+CREATE VIEW CourseQueuePositions AS
+    SELECT * 
+    FROM WaitingList 
+    ORDER BY course;
+
+
+
+
+
+
+
+
+
