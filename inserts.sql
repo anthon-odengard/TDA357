@@ -30,6 +30,7 @@ INSERT INTO Courses VALUES ('CCC222', 'C2', 20,   'Dep1');
 INSERT INTO Courses VALUES ('CCC333', 'C3', 30,   'Dep1');
 INSERT INTO Courses VALUES ('CCC444', 'C4', 40,   'Dep1');
 INSERT INTO Courses VALUES ('CCC555', 'C5', 50,   'Dep1');
+INSERT INTO Courses VALUES ('CCC666', 'C6', 17.5,   'Dep3');
 
 INSERT INTO Prerequisites VALUES('CCC222', 'CCC111');
 INSERT INTO Prerequisites VALUES('CCC333', 'CCC111');
@@ -37,6 +38,7 @@ INSERT INTO Prerequisites VALUES('CCC444', 'CCC333');
 
 INSERT INTO LimitedCourses VALUES ('CCC222', 2);
 INSERT INTO LimitedCourses VALUES ('CCC333', 2);
+INSERT INTO LimitedCourses VALUES ('CCC555', 1);
 
 INSERT INTO Classifications VALUES ('math');
 INSERT INTO Classifications VALUES ('research');
@@ -77,9 +79,7 @@ INSERT INTO Taken VALUES('4444444444', 'CCC222', '5');
 INSERT INTO Taken VALUES('4444444444', 'CCC333', '5');
 INSERT INTO Taken VALUES('4444444444', 'CCC444', '5');
 
-INSERT INTO Taken VALUES('5555555555', 'CCC111', '5');
-INSERT INTO Taken VALUES('5555555555', 'CCC333', '5');
-INSERT INTO Taken VALUES('5555555555', 'CCC444', '5');
+INSERT INTO Taken VALUES('5555555555', 'CCC555', '4');
 
 INSERT INTO Taken VALUES('6666666666', 'CCC111', '3');
 INSERT INTO Taken VALUES('6666666666', 'CCC333', '3');
@@ -87,6 +87,12 @@ INSERT INTO Taken VALUES('6666666666', 'CCC333', '3');
 
 ----------------------------------------------------------------------------------------
 ------------------------------- INSERTS TESTING TRIGGERS -------------------------------
+
+
+--------------------------------- REGISTER FOR COURSE ----------------------------------
+
+--Should register:
+INSERT INTO Registrations VALUES ('6666666666', 'CCC555', 'registered');
 
 ---Already waiting:
 INSERT INTO Registrations VALUES ('3333333333', 'CCC222', 'registered');
@@ -96,14 +102,24 @@ INSERT INTO Registrations VALUES ('1111111111', 'CCC111', 'registered');
 
 ---Not necessary prerequisites: (student has not taken CCC111 needed for CCC222)
 INSERT INTO Registrations VALUES ('5555555555', 'CCC222', 'registered');
+INSERT INTO Registrations VALUES ('5555555555', 'CCC444', 'registered');
 
 --Put on waitinglist:
 INSERT INTO Registrations VALUES ('4444444444', 'CCC444', 'registered');
-INSERT INTO Registrations VALUES ('5555555555', 'CCC444', 'registered');
 INSERT INTO Registrations VALUES ('6666666666', 'CCC222', 'registered');
+INSERT INTO Registrations VALUES ('1111111111', 'CCC555', 'registered');
+INSERT INTO Registrations VALUES ('2222222222', 'CCC555', 'registered');
 
---Should register
-INSERT INTO Registrations VALUES ('6666666666', 'CCC555', 'registered');
+
+
+
+----------------------------------------------------------------------------------------
+-------------------------------- UNREGISTER FOR COURSE ---------------------------------
+
+--Delete from waitinglist:
+DELETE FROM Registrations WHERE student = '1111111111' AND course = 'CCC555';
+DELETE FROM Registrations WHERE student = '2222222222' AND course = 'CCC555';
+
 
 
 
