@@ -25,16 +25,16 @@ CREATE OR REPLACE FUNCTION course_reg() RETURNS trigger AS $$
 		
 		--Check prerequisites: (if there are any prerequisites and if their fulfilled)
 		ELSEIF EXISTS(SELECT course FROM Prerequisites WHERE course = NEW.course) AND
-			NOT EXISTS(SELECT student, prerequisite FROM Prerequisites
-			JOIN Taken ON prerequisite = Taken.course AND student = NEW.student
-			WHERE Prerequisites.course = NEW.course AND grade NOT IN ('U')) THEN
+		NOT EXISTS(SELECT student, prerequisite FROM Prerequisites
+		JOIN Taken ON prerequisite = Taken.course AND student = NEW.student
+		WHERE Prerequisites.course = NEW.course AND grade NOT IN ('U')) THEN
 			
 			RAISE EXCEPTION 'Student does not have the necessary prerequisites to register for the course.';
 		
 		--Check course not full and if it is insert into WaitingList
 		ELSEIF EXISTS(SELECT code FROM LimitedCourses WHERE code = NEW.course)
 		AND ((SELECT COALESCE(COUNT(student),0) FROM Registered WHERE course = NEW.course)
-			>= (SELECT capacity FROM LimitedCourses WHERE code = NEW.course)) THEN
+		>= (SELECT capacity FROM LimitedCourses WHERE code = NEW.course)) THEN
 			
 			newPos := (SELECT COALESCE(MAX(position),0) FROM WaitingList WHERE course = NEW.course);
 			INSERT INTO WaitingList VALUES (NEW.student, NEW.course, newPos + 1);
@@ -76,41 +76,64 @@ INSTEAD OF INSERT ON Registrations
 
 	2.2 Check if open slot on course
 
-		2.2.1 If yes -> Register student first in course
+		2.2.1 If yes -> Register first student to course and normalise queue
 
 		2.2.2 If no -> Do nothing
 */
 
 
-SELECT student FROM WaitingList WHERE student = '1111111111' AND course = 'CCC555'
 
 
 CREATE OR REPLACE FUNCTION course_unreg() RETURNS trigger AS $$
 	DECLARE
 		queuePos INT;
+		nextStudent CHAR(10);
 	BEGIN
 		
 		--If student in on WaitingList then remove
 		IF EXISTS(SELECT student FROM WaitingList
-			WHERE student = OLD.student AND course = OLD.course) THEN
+		WHERE student = OLD.student AND course = OLD.course) THEN
 			
 			queuePos := (SELECT position FROM WaitingList
 					WHERE student = OLD.student AND course = OLD.course);
 			
 			DELETE FROM WaitingList WHERE student = OLD.student AND course = OLD.course;
 			
-			IF (queuePos < (SELECT COALESCE(MAX(position),0) FROM WaitingList WHERE course = OLD.course))
-			THEN
-				UPDATE WaitingList
-				SET position = position - 1 --FUNKAR EJ!
-				WHERE position >= queuePos AND course = OLD.course;
+			--IF (queuePos < (SELECT COALESCE(MAX(position),0) FROM WaitingList
+			--WHERE course = OLD.course)) THEN
+			
+				--UPDATE WaitingList
+				--SET position = position + 10
+				--WHERE position >= queuePos AND course = OLD.course;
 			
 			RAISE NOTICE 'Student has been removed from waitinglist';
 			
+			--END IF;
+			
+		--If student is registered
+		ELSEIF EXISTS(SELECT student FROM Registered
+		WHERE student = OLD.student AND course = OLD.course) THEN
+			
+			DELETE FROM Registered WHERE student = OLD.student AND course = OLD.course;
+			
+			RAISE NOTICE 'Student has been removed from registration to course.'
+			
+			IF EXISTS(SELECT course FROM WaitingList WHERE course = OLD.course) THEN
+			
+				nextStudent := (SELECT student FROM WaitingList
+				WHERE course = OLD.course ORDER BY position LIMIT 1);
+				
+				INSERT INTO Registered VALUES (nextStudent, OLD.course);
+				
+				DELETE FROM WaitingList WHERE student = nextStudent AND course = OLD.course;
+
+				--UPDATE WaitingList
+				--SET position = position - 1
+				--WHERE position > 0 AND course = OLD.course;
+				
+				RAISE NOTICE 'Student has been removed from waitinglist and registered to the course.'
+			
 			END IF;
-		
-		--If student is registered then remove from Registered
-		
 		
 		END IF;
 		

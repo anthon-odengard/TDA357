@@ -120,6 +120,11 @@ INSERT INTO Registrations VALUES ('2222222222', 'CCC555', 'registered');
 DELETE FROM Registrations WHERE student = '1111111111' AND course = 'CCC555';
 DELETE FROM Registrations WHERE student = '2222222222' AND course = 'CCC555';
 
+--Delete from registered and add from waitinglist:
+DELETE FROM Registrations WHERE student = '6666666666' AND course = 'CCC555';
+DELETE FROM Registrations WHERE student = '1111111111' AND course = 'CCC555';
+DELETE FROM Registrations WHERE student = '2222222222' AND course = 'CCC555';
+
 
 
 
