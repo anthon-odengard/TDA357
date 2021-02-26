@@ -1,3 +1,10 @@
+
+
+
+
+INSERT INTO Program VALUES ('Prog1', 'P1');
+INSERT INTO Program VALUES ('Prog2', 'P2');
+
 INSERT INTO Branches VALUES ('B1', 'Prog1');
 INSERT INTO Branches VALUES ('B2', 'Prog1');
 INSERT INTO Branches VALUES ('B1', 'Prog2');
@@ -11,8 +18,6 @@ INSERT INTO Students VALUES ('6666666666', 'Nx', 'ls6', 'Prog2');
 
 INSERT INTO Department VALUES ('Dep1', 'D1');
 
-INSERT INTO Program VALUES ('Prog1', 'P1');
-INSERT INTO Program VALUES ('Prog2', 'P2');
 
 INSERT INTO ProgramHost VALUES ('Prog1', 'Dep1');
 INSERT INTO ProgramHost VALUES ('Prog2', 'Dep1');
@@ -34,10 +39,6 @@ INSERT INTO Classified VALUES ('CCC333', 'math');
 INSERT INTO Classified VALUES ('CCC444', 'research');
 INSERT INTO Classified VALUES ('CCC444','seminar');
 
-INSERT INTO StudentBranches VALUES ('2222222222', 'B1', 'Prog1');
-INSERT INTO StudentBranches VALUES ('3333333333', 'B1', 'Prog2');
-INSERT INTO StudentBranches VALUES ('4444444444', 'B1', 'Prog1');
-
 INSERT INTO MandatoryProgram VALUES ('CCC111', 'Prog1');
 
 INSERT INTO MandatoryBranch VALUES ('CCC333', 'B1', 'Prog1');
@@ -56,6 +57,10 @@ INSERT INTO WaitingList VALUES ('3333333333', 'CCC222');
 INSERT INTO WaitingList VALUES ('3333333333', 'CCC333');
 INSERT INTO WaitingList VALUES ('2222222222', 'CCC333');
 
+INSERT INTO StudentBranches VALUES ('2222222222', 'B1', 'Prog1');
+INSERT INTO StudentBranches VALUES ('3333333333', 'B1', 'Prog2');
+INSERT INTO StudentBranches VALUES ('4444444444', 'B1', 'Prog1');
+
 INSERT INTO Taken VALUES('2222222222', 'CCC111', 'U');
 INSERT INTO Taken VALUES('2222222222', 'CCC222', 'U');
 INSERT INTO Taken VALUES('2222222222', 'CCC444', 'U');
@@ -69,8 +74,13 @@ INSERT INTO Taken VALUES('5555555555', 'CCC111', '5');
 INSERT INTO Taken VALUES('5555555555', 'CCC333', '5');
 INSERT INTO Taken VALUES('5555555555', 'CCC444', '5');
 
+INSERT INTO Prerequisites VALUES('CCC222', 'CCC111');
+INSERT INTO Prerequisites VALUES('CCC444', 'CCC111');
 
-SELECT * FROM Department;
+
+\i /Users/anthonodengard/TDA357/Laborationer/views.sql
+
+/*SELECT * FROM Department;
 SELECT * FROM ProgramHost;
 SELECT * FROM Program;
 SELECT * FROM Branches;
@@ -84,4 +94,7 @@ SELECT * FROM MandatoryBranch;
 SELECT * FROM RecommendedBranch;
 SELECT * FROM Registered;
 SELECT * FROM WaitingList;
-SELECT * FROM Taken;
+SELECT * FROM Taken; 
+*/
+
+

@@ -35,10 +35,10 @@ CREATE View UnreadMandatory AS
     WHERE (student, course) NOT IN (SELECT student, course FROM PassedCourses);
 
 
-CREATE VIEW PathToGraduation(
+CREATE VIEW PathToGraduation AS(
     WITH Student(student) AS (
-        SELECT Students.idnr
-        FROM Students
+        SELECT st.idnr
+        FROM Students st
     ),
     PassedCredits AS (
         SELECT student, sum(credits) AS totalCredits
@@ -143,7 +143,7 @@ CREATE VIEW CourseQueuePositions AS
     ORDER BY course;
 
 
-
+\i /Users/anthonodengard/TDA357/Laborationer/triggers.sql
 
 
 

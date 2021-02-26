@@ -1,3 +1,6 @@
+DROP SCHEMA public CASCADE;
+CREATE SCHEMA public;
+
 CREATE TABLE Department(
     name VARCHAR PRIMARY KEY,
     abbreviation VARCHAR UNIQUE
@@ -105,7 +108,9 @@ CREATE TABLE WaitingList(
 CREATE TABLE Prerequisites(
 	course CHAR(6) NOT NULL,
 	prerequisites CHAR(6) NOT NULL,
-	PRIMARY KEY (course),
+	PRIMARY KEY (course, prerequisites),
 	FOREIGN KEY (course) REFERENCES Courses,
 	FOREIGN KEY (prerequisites) REFERENCES Courses
 	);
+
+\i /Users/anthonodengard/TDA357/Laborationer/inserts.sql
