@@ -1,0 +1,94 @@
+Domain(depname, depabbr, progname, progabbr, branch, idnr, sname, login, code, cname, credits, capacity, classification, position, grade, reqcourse)
+
+
+Department
+{depname} -> {depabbr}
+{depabbr} ->  {depname}
+
+Program
+{progname} -> {progabbr}
+
+
+Student
+{idnr} -> {program}
+{idnr} -> {sname}
+{idnr} -> {login}
+{login} -> {idnr}
+
+
+Courses
+{code} -> {depname}
+{code} -> {credits}
+{code} -> {cname}
+
+Classified
+
+
+LimitedCourses
+{code} -> {capacity}
+
+Waitinglist
+{idnr, code} -> {position}
+{position, code} -> idnr 
+
+Taken
+{idnr, code} ->{grade}
+
+
+StudentBranches
+{idnr} -> {program}
+{idnr} -> {branch}
+
+Prerequisite
+{code} -> {reqcourse}
+
+IDNR
+
+{idnr} -> {program}
+{idnr} -> {sname}
+{idnr} -> {login}
+{idnr} -> {program}
+{idnr} -> {branch}
+
+{idnr} -> {program, sname, login, program, branch}
+
+{idnr, code} ->{grade}
+{idnr, code} -> {position}
+
+{idnr, code} -> {grade, position}
+
+CODE
+
+{code} -> {depname}
+{code} -> {credits}
+{code} -> {cname}
+{code} -> {capacity}
+
+{code} -> {depname, credits, cname, capacity}
+{position, code} -> {idnr} 
+
+Department
+{depname} -> {depabbr}
+{depabbr} ->  {depname}
+
+Program
+{progname} -> {progabbr}
+
+
+FD
+
+{idnr} -> {sname, login, program, branch}
+
+{login} -> {idnr}
+
+{code} -> {depname, credits, cname, capacity, reqcourse}
+
+{position, code} -> {idnr} 
+
+{idnr, code} -> {grade, position}
+
+{depname} -> {depabbr}
+{depabbr} ->  {depname}
+
+{progname} -> {progabbr, depname}
+

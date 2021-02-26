@@ -1,0 +1,20 @@
+Student(_idnr_, sname, login, progname, branch)
+	program  →  Program.name
+	login unique
+	
+Course(_code_, cname, depname, credits, capacity)
+	depname → Department.depname
+	
+
+WaitinglistAndTaken(_idnr_, _code_, position, grade)
+	idnr → Student.idnr
+	code →  Course.code
+	(code, position) unique
+
+Department(_depname_, depabbr)
+	abbreviation unique
+
+Program(_progname_, progabbr)
+	
+	
+
