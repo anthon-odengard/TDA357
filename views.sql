@@ -11,7 +11,7 @@ CREATE OR REPLACE VIEW BasicInformation AS(
 	);
 
 CREATE OR REPLACE VIEW CourseQueuePositions AS(
-	SELECT course, student, position AS place
+	SELECT student, course, ROW_NUMBER () OVER (PARTITION BY course) AS position
 	FROM WaitingList
 	);
 

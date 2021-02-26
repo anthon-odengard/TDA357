@@ -62,8 +62,6 @@ INSTEAD OF INSERT ON Registrations
 -------------------------------- STUDENT REGISTRATIONS ---------------------------------
 
 
---DROP FUNCTION course_unreg() CASCADE;
-
 /*
 1. Student is on waiting list
 
@@ -99,16 +97,7 @@ CREATE OR REPLACE FUNCTION course_unreg() RETURNS trigger AS $$
 			
 			DELETE FROM WaitingList WHERE student = OLD.student AND course = OLD.course;
 			
-			--IF (queuePos < (SELECT COALESCE(MAX(position),0) FROM WaitingList
-			--WHERE course = OLD.course)) THEN
-			
-				--UPDATE WaitingList
-				--SET position = position + 10
-				--WHERE position >= queuePos AND course = OLD.course;
-			
 			RAISE NOTICE 'Student has been removed from waitinglist';
-			
-			--END IF;
 			
 		--If student is registered
 		ELSEIF EXISTS(SELECT student FROM Registered
@@ -116,9 +105,11 @@ CREATE OR REPLACE FUNCTION course_unreg() RETURNS trigger AS $$
 			
 			DELETE FROM Registered WHERE student = OLD.student AND course = OLD.course;
 			
-			RAISE NOTICE 'Student has been removed from registration to course.'
+			RAISE NOTICE 'Student has been removed from registration to course.';
 			
-			IF EXISTS(SELECT course FROM WaitingList WHERE course = OLD.course) THEN
+			IF EXISTS(SELECT course FROM WaitingList WHERE course = OLD.course)
+			AND ((SELECT capacity FROM LimitedCourses WHERE code = OLD.course)
+			> (SELECT COUNT(student) FROM Registered WHERE course = OLD.course)) THEN
 			
 				nextStudent := (SELECT student FROM WaitingList
 				WHERE course = OLD.course ORDER BY position LIMIT 1);
@@ -126,12 +117,8 @@ CREATE OR REPLACE FUNCTION course_unreg() RETURNS trigger AS $$
 				INSERT INTO Registered VALUES (nextStudent, OLD.course);
 				
 				DELETE FROM WaitingList WHERE student = nextStudent AND course = OLD.course;
-
-				--UPDATE WaitingList
-				--SET position = position - 1
-				--WHERE position > 0 AND course = OLD.course;
 				
-				RAISE NOTICE 'Student has been removed from waitinglist and registered to the course.'
+				RAISE NOTICE 'Student has been removed from waitinglist and registered to the course.';
 			
 			END IF;
 		

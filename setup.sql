@@ -1,5 +1,5 @@
 ----------------------------------------------------------------------------------------
----------------------------------------- INSERT ----------------------------------------
+---------------------------------------- SETUP -----------------------------------------
 ----------------------------------------------------------------------------------------
 
 INSERT INTO Departments VALUES ('Dep1', 'D1');
@@ -63,7 +63,6 @@ INSERT INTO MandatoryBranch VALUES ('CCC555', 'B1', 'Prog2');
 INSERT INTO RecommendedBranch VALUES ('CCC222', 'B1', 'Prog1');
 INSERT INTO RecommendedBranch VALUES ('CCC333', 'B2', 'Prog1');
 
-INSERT INTO Registered VALUES ('1111111111', 'CCC111');
 INSERT INTO Registered VALUES ('1111111111', 'CCC222');
 INSERT INTO Registered VALUES ('2222222222', 'CCC222');
 INSERT INTO Registered VALUES ('5555555555', 'CCC333');
@@ -75,6 +74,10 @@ INSERT INTO Registered VALUES ('3333333333', 'CCC777');
 INSERT INTO WaitingList VALUES ('3333333333', 'CCC222', 1);
 INSERT INTO WaitingList VALUES ('3333333333', 'CCC333', 1);
 INSERT INTO WaitingList VALUES ('2222222222', 'CCC333', 2);
+INSERT INTO WaitingList VALUES ('2222222222', 'CCC555', 2);
+INSERT INTO WaitingList VALUES ('4444444444', 'CCC555', 3);
+INSERT INTO WaitingList VALUES ('4444444444', 'CCC777', 4);
+INSERT INTO WaitingList VALUES ('1111111111', 'CCC777', 5);
 
 INSERT INTO Taken VALUES('2222222222', 'CCC111', 'U');
 INSERT INTO Taken VALUES('2222222222', 'CCC222', 'U');
