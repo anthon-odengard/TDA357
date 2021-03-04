@@ -40,7 +40,7 @@ CREATE TABLE Courses(
 
 CREATE TABLE LimitedCourses(
     code CHAR(6) REFERENCES Courses(code) PRIMARY KEY,
-    capacity CHAR(10) NOT NULL
+    capacity INT NOT NULL
 );
 
 CREATE TABLE StudentBranches(

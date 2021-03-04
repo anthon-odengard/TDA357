@@ -33,6 +33,8 @@ CREATE OR REPLACE FUNCTION unregisterCourse () RETURNS TRIGGER AS $$
               RAISE NOTICE 'Student has been removed from course';
         ELSIF(OLD.student IN(SELECT wl.student FROM WaitingList wl WHERE (wl.course = OLD.course)))
             THEN DELETE FROM WaitingList WHERE (student = OLD.student AND course = OLD.course );
+        ELSE 
+          RAISE EXCEPTION 'Student not registered';
         END IF;
 
         -- Check if course still full, if not add next in line from waitinglist.
@@ -45,7 +47,7 @@ CREATE OR REPLACE FUNCTION unregisterCourse () RETURNS TRIGGER AS $$
             DELETE FROM WaitingList WHERE (student = nextInLine AND course = OLD.course);
             INSERT INTO Registrations VALUES(nextInLine, OLD.course);
         END IF;
-        RETURN NULL;
+        RETURN NEW;
     END;
 $$ LANGUAGE plpgsql;
 
@@ -63,7 +65,7 @@ CREATE OR REPLACE FUNCTION CourseFull(inputCourse CHAR(6)) RETURNS BOOLEAN AS $$
 $$ LANGUAGE plpgsql;
 
 -- Crosscheck student prerequisite
-CREATE OR REPLACE FUNCTION PreReqCheck(studentId BIGINT, course CHAR(6)) RETURNS BOOLEAN AS $$
+CREATE OR REPLACE FUNCTION PreReqCheck(studentId CHAR(10), course CHAR(6)) RETURNS BOOLEAN AS $$
     BEGIN
         IF(course NOT IN(SELECT pq.course FROM prerequisites pq))
             THEN RETURN TRUE;
