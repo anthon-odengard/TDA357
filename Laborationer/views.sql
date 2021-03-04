@@ -137,10 +137,11 @@ CREATE VIEW PathToGraduation AS(
 
 );
 
-CREATE VIEW CourseQueuePositions AS
-    SELECT * 
-    FROM WaitingList 
-    ORDER BY course;
+
+    CREATE OR REPLACE VIEW CourseQueuePositions AS(
+	SELECT student, course, ROW_NUMBER () OVER (PARTITION BY course) AS position
+	FROM WaitingList
+	);
 
 
 \i /Users/anthonodengard/TDA357/Laborationer/triggers.sql

@@ -31,3 +31,8 @@ INSERT INTO Registrations VALUES ('5555555555', 'CCC111');
 -- Test #8: Register course with missing prerequisite
 -- Expected output: Student missing prerequisites.
 INSERT INTO Registrations VALUES ('1111111111', 'CCC444');
+
+-- Test #8: DELETE from overfull course
+DELETE FROM Registrations WHERE student = '4444444444' AND course = 'CCC222';
+
+INSERT INTO Registrations VALUES ('4444444444', 'CCC222');
