@@ -11,16 +11,41 @@ public class TestPortal {
    
          // Write your tests here. Add/remove calls to pause() as desired. 
          // Use println instead of prettyPrint to get more compact output (if your raw JSON is already readable)
-   
-         System.out.println(c.unregister("2222222222", "CCC333")); 
+         System.out.println("======== 1A (pass) ========");
+         System.out.println(c.register("5555555555", "CCC111"));
+         System.out.println(" ");
+         //pause();
+
+         System.out.println("======== 1B (fail) ========"); //Student cannot register
+         System.out.println(c.register("5555555555", "CCC222"));
+         //System.out.println(" ");
          pause();
 
+         System.out.println("======== 2 (pass) ========");
+         System.out.println(c.unregister("5555555555", "CCC111"));
+         //System.out.println(" ");
+         pause();
+
+         System.out.println("======== 3A (fail) ========"); //Student is not registered/waiting
+         System.out.println(c.unregister("5555555555", "CCC111"));
+         System.out.println(" ");
+         //pause();
+
+         System.out.println("======== 3B (fail) ========"); //Student doesn't exist
+         System.out.println(c.unregister("7777777777", "CCC111"));
+         System.out.println(" ");
+         //pause();
+
+         System.out.println("======== 3C (fail) ========"); //Course doesn't exist
+         System.out.println(c.unregister("5555555555", "CCC999"));
+         //System.out.println(" ");
+         pause();
+
+          System.out.println("======== 4 ========");
          prettyPrint(c.getInfo("2222222222")); 
          pause();
 
-         System.out.println(c.register("2222222222", "CCC333")); 
-         pause();
-
+         System.out.println("======== 5 ========");
          prettyPrint(c.getInfo("2222222222"));
 
 
