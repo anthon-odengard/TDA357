@@ -1,15 +1,6 @@
 ----------------------------------------------------------------------------------------
 ------------------------------- INSERTS TESTING TRIGGERS -------------------------------
 
-/*
-
-select * from taken order by student, course;
-
-select * from registrations order by course, status, student;
-select * from coursequeuepositions order by course, place;
-
-*/
-
 
 --------------------------------- REGISTER FOR COURSE ----------------------------------
 
