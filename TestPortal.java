@@ -75,13 +75,12 @@ public class TestPortal {
          pause();
 
          System.out.println("======== 9. Unregister with the SQL injection you introduced, causing all " +
-                 "(or almost all?) registrations to disappear.  ========");
+                 "registrations to disappear.  ========");
          System.out.println(c.getRegistrations());
          String courseVulnerable = " '; DELETE FROM Registrations WHERE student <> 'XXX ";
          System.out.println(c.unregisterVulnerability("XXX", courseVulnerable));
          System.out.println(c.getRegistrations());
          System.out.println(" ");
-
       
       } catch (ClassNotFoundException e) {
          System.err.println("ERROR!\nYou do not have the Postgres JDBC driver (e.g. postgresql-42.2.18.jar) in your runtime classpath!");

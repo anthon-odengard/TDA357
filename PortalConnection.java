@@ -31,7 +31,6 @@ public class PortalConnection {
         conn = DriverManager.getConnection(db, props);
     }
 
-
     // Register a student on a course, returns a tiny JSON document (as a String)
     public String register(String student, String courseCode){
         try(PreparedStatement ps = conn.prepareStatement(
@@ -80,7 +79,7 @@ public class PortalConnection {
     public String unregisterVulnerability(String student, String courseCode){
         //SQL injection vulnerability
         String upd = "DELETE FROM Registrations WHERE student = '"+student+"' AND course = '"+courseCode+"'";
-        System.out.println("\n" + "VULNERABILITY QUERY: \n" + upd + "\n");
+        System.out.println("\n" + "QUERY (WITHOUT PREPARED STATEMENT) : \n" + upd + "\n");
         try(Statement s = conn.createStatement()){
             int x = s.executeUpdate(upd);
             if (x < 0){
