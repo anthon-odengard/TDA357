@@ -39,6 +39,7 @@ public class PortalConnection {
             ps.setString(1,student);
             ps.setString(2, courseCode);
             ps.executeUpdate();
+            System.out.println(ps);
             return "{\"success\":true}";
         } catch (SQLException e) {
             return "{\"success\":false, \"error\":\""+getError(e)+"\"}";
@@ -64,7 +65,7 @@ public class PortalConnection {
             ps.setString(2, courseCode);
             int x = ps.executeUpdate();
             System.out.println(ps);
-            System.out.println("x = " + Integer.toString(x));
+            //System.out.println("x = " + Integer.toString(x));
             if(x == 0){
                 return "{\"success\":false, \"error\":\" Nothing was deleted \"}";
             } else{
@@ -76,7 +77,7 @@ public class PortalConnection {
     }
 
     // Unregister a student from a course, returns a tiny JSON document (as a String)
-    public String unregisterFaulty(String student, String courseCode){
+    public String unregisterVulnerability(String student, String courseCode){
         //SQL injection vulnerability
         String upd = "DELETE FROM Registrations WHERE student = '"+student+"' AND course = '"+courseCode+"'";
         System.out.println("\n" + "VULNERABILITY QUERY: \n" + upd + "\n");
@@ -92,10 +93,6 @@ public class PortalConnection {
         }
 
     }
-
-
-
-
 
 
     // Return a JSON document containing lots of information about a student, it should validate against the schema
@@ -161,6 +158,62 @@ public class PortalConnection {
             
         } 
     }
+
+    public String getQueue(String course) throws SQLException{
+
+        try(PreparedStatement stQueue = conn.prepareStatement(
+                "SELECT jsonb_build_object('student',Registrations.student,'status',status,'place',place," +
+                        "'course',Registrations.course) " +
+                        "AS jsondata FROM Registrations " +
+                        "LEFT JOIN CourseQueuePositions " +
+                        "ON Registrations.student = CourseQueuePositions.student " +
+                        "AND Registrations.course = CourseQueuePositions.course " +
+                        "WHERE Registrations.course=? " +
+                        "ORDER BY status, place, Registrations.student"
+        );){
+
+            stQueue.setString(1, course);
+
+            ResultSet rsQueue = stQueue.executeQuery();
+
+            if(rsQueue.next()) {
+                String queue = rsQueue.getString("jsondata");
+                while(rsQueue.next()) {
+                    queue = queue + ",\n" + rsQueue.getString("jsondata");
+                }
+
+                return "{\n" + queue + "\n}";
+            } else
+                return "{\"queue\":\"does not exist :(\"}";
+
+        }
+    }
+
+    public String getRegistrations() throws SQLException{
+
+        try(PreparedStatement stRegistrations = conn.prepareStatement(
+                "SELECT jsonb_build_object('student',Registrations.student,'status',status," +
+                        "'course',Registrations.course) " +
+                        "AS jsondata FROM Registrations " +
+                        "ORDER BY Registrations.course, status"
+        );){
+
+
+            ResultSet rsRegistrations = stRegistrations.executeQuery();
+
+            if(rsRegistrations.next()) {
+                String registrations = rsRegistrations.getString("jsondata");
+                while(rsRegistrations.next()) {
+                    registrations = registrations + ",\n" + rsRegistrations.getString("jsondata");
+                }
+
+                return "{\n" + registrations + "\n}";
+            } else
+                return "{\"queue\":\"does not exist :(\"}";
+
+        }
+    }
+
 
     // This is a hack to turn an SQLException into a JSON string error message. No need to change.
     public static String getError(SQLException e){
