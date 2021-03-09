@@ -23,7 +23,7 @@ CREATE OR REPLACE FUNCTION course_reg() RETURNS trigger AS $$
 		ELSEIF EXISTS(SELECT student, course FROM Taken
 		WHERE student = NEW.student AND course = NEW.course AND grade NOT IN ('U'))
 		THEN 
-			RAISE EXCEPTION 'Student has already passed the course.';
+			RAISE EXCEPTION 'Student have already passed this course';
 
 		--Check prerequisites: (if there are any prerequisites and if their fulfilled)
 		ELSEIF EXISTS(SELECT course FROM Prerequisites WHERE course = NEW.course) AND
@@ -40,13 +40,13 @@ CREATE OR REPLACE FUNCTION course_reg() RETURNS trigger AS $$
 			
 			newPos := (SELECT COALESCE(MAX(position),0) FROM WaitingList WHERE course = NEW.course);
 			INSERT INTO WaitingList VALUES (NEW.student, NEW.course, newPos + 1);
-			RAISE NOTICE 'Student has been put on waitinglist.';
+			RAISE NOTICE 'Student has been put on waitinglist';
 		
 		--Otherwise register student for course:
 		ELSE
 		
 			INSERT INTO Registered VALUES(NEW.student, NEW.course);
-			RAISE NOTICE 'Student has been registered for the course.';
+			RAISE NOTICE 'Student has been registered for the course';
 		
 		END IF;
 		
@@ -90,6 +90,8 @@ CREATE OR REPLACE FUNCTION course_unreg() RETURNS trigger AS $$
 		nextStudent CHAR(10);
 	BEGIN
 
+		RAISE NOTICE 'yoyoyo';
+
 		--If student in on WaitingList then remove
 		IF EXISTS(SELECT student FROM WaitingList
 		WHERE student = OLD.student AND course = OLD.course) THEN
@@ -127,13 +129,15 @@ CREATE OR REPLACE FUNCTION course_unreg() RETURNS trigger AS $$
 		--If student is not in Registered or on WaitingList
 		ELSE
 			
-			RAISE EXCEPTION 'Student is not registered and not on waitingList.';
+			RAISE EXCEPTION 'Student is not registered and not on waitingList';
 
 		END IF;
 
 	RETURN OLD;
 	END;
 $$ LANGUAGE plpgsql;
+
+
 
 CREATE TRIGGER student_unreg_course
 INSTEAD OF DELETE ON Registrations

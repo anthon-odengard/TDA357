@@ -132,7 +132,7 @@ public class PortalConnection {
               return rsBasic.getString("jsondata") + rsFinished.getString("jsondata") +
                       rsRegistered.getString("jsondata") + rsPathToGrad.getString("jsondata");
             else
-              return "{\"student\":\"does not exist :(\"}"; 
+              return "{\"student\":\"does not exist :(\"}";
             
         } 
     }

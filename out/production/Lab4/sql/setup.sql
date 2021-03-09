@@ -2,17 +2,8 @@
 ---------------------------------------- SETUP -----------------------------------------
 ----------------------------------------------------------------------------------------
 
-/*
-\set QUIET true
-SET client_min_messages TO WARNING;
 DROP SCHEMA public CASCADE;
 CREATE SCHEMA public;
-GRANT ALL ON SCHEMA public TO postgres;
-SET client_min_messages TO NOTICE;
-\set QUIET false
-*/
-
-
 ----------------------------------------------------------------------------------------
 --------------------------------------- TABLES -----------------------------------------
 ----------------------------------------------------------------------------------------
@@ -223,7 +214,6 @@ INSERT INTO Registered VALUES ('1111111111', 'CCC222');
 INSERT INTO Registered VALUES ('2222222222', 'CCC222');
 INSERT INTO Registered VALUES ('5555555555', 'CCC333');
 INSERT INTO Registered VALUES ('1111111111', 'CCC333');
-INSERT INTO Registered VALUES ('6666666666', 'CCC555');
 INSERT INTO Registered VALUES ('1111111111', 'CCC777');
 INSERT INTO Registered VALUES ('2222222222', 'CCC777');
 INSERT INTO Registered VALUES ('3333333333', 'CCC777');
@@ -234,6 +224,7 @@ INSERT INTO WaitingList VALUES ('2222222222', 'CCC333', 2);
 INSERT INTO WaitingList VALUES ('2222222222', 'CCC555', 2);
 INSERT INTO WaitingList VALUES ('4444444444', 'CCC555', 3);
 INSERT INTO WaitingList VALUES ('4444444444', 'CCC777', 4);
+INSERT INTO WaitingList VALUES ('1111111111', 'CCC777', 5);
 
 INSERT INTO Taken VALUES('2222222222', 'CCC111', 'U');
 INSERT INTO Taken VALUES('2222222222', 'CCC222', 'U');
