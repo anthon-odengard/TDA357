@@ -2,7 +2,7 @@
 ---------------------------------------- SETUP -----------------------------------------
 ----------------------------------------------------------------------------------------
 
-
+/*
 \set QUIET true
 SET client_min_messages TO WARNING;
 DROP SCHEMA public CASCADE;
@@ -10,8 +10,7 @@ CREATE SCHEMA public;
 GRANT ALL ON SCHEMA public TO postgres;
 SET client_min_messages TO NOTICE;
 \set QUIET false
-
-
+*/
 
 ----------------------------------------------------------------------------------------
 --------------------------------------- TABLES -----------------------------------------
