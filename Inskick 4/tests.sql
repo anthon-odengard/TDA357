@@ -1,0 +1,71 @@
+----------------------------------------------------------------------------------------
+------------------------------- INSERTS TESTING TRIGGERS -------------------------------
+
+/*
+
+select * from taken order by student, course;
+
+select * from registrations order by course, status, student;
+select * from coursequeuepositions order by course, place;
+
+*/
+
+
+--------------------------------- REGISTER FOR COURSE ----------------------------------
+
+-- TEST #1: Register to unlimited courses
+-- EXPECTED OUTPUT: Pass
+INSERT INTO Registrations VALUES ('1111111111', 'CCC111', 'registered');
+
+-- TEST #2: Register to limited course with necessary prerequisites: (student has taken CCC333 needed for CCC444)
+-- EXPECTED OUTPUT: Pass
+INSERT INTO Registrations VALUES ('6666666666', 'CCC444', 'registered');
+
+-- TEST #3: Already waiting
+-- EXPECTED OUTPUT: Fail
+INSERT INTO Registrations VALUES ('3333333333', 'CCC222', 'registered');
+
+-- TEST #4: Already registered
+-- EXPECTED OUTPUT: Fail
+INSERT INTO Registrations VALUES ('1111111111', 'CCC111', 'registered');
+
+-- TEST #5: Not necessary prerequisites: (student has not taken CCC111 needed for CCC222)
+-- EXPECTED OUTPUT: Fail
+INSERT INTO Registrations VALUES ('5555555555', 'CCC222', 'registered');
+
+-- TEST #6: Register already passed
+-- EXPECTED OUTPUT: Fail
+INSERT INTO Registrations VALUES ('4444444444', 'CCC111', 'registered');
+
+-- TEST #7: Register but put on waitinglist
+-- EXPECTED OUTPUT: Pass
+INSERT INTO Registrations VALUES ('1111111111', 'CCC555', 'registered');
+
+
+-------------------------------- UNREGISTER FOR COURSE ---------------------------------
+
+-- TEST #8: Unregister from a limited course with a waiting list, when the student is in the middle of the waiting list
+-- EXPECTED OUTPUT: Pass
+DELETE FROM Registrations WHERE student = '4444444444' AND course = 'CCC555';
+
+-- TEST #9: Unregister from a limited course with a waiting list, when the student is registered
+-- EXPECTED OUTPUT: Pass
+DELETE FROM Registrations WHERE student = '2222222222' AND course = 'CCC222';
+
+-- TEST #10: Unregister from an unlimited course
+-- EXPECTED OUTPUT: Pass
+DELETE FROM Registrations WHERE student = '1111111111' AND course = 'CCC111';
+
+-- TEST #11: Unregister from a limited course without a waiting list
+-- EXPECTED OUTPUT: Pass
+DELETE FROM Registrations WHERE student = '1111111111' AND course = 'CCC222';
+
+-- TEST #12: Unregister from an overfull course with a waiting list.
+-- EXPECTED OUTPUT: Pass
+DELETE FROM Registrations WHERE student = '2222222222' AND course = 'CCC777';
+
+
+
+
+
+
