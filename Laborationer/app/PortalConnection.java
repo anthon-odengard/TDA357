@@ -19,20 +19,18 @@ public class PortalConnection {
     // static final String DATABASE = "jdbc:postgresql://brage.ita.chalmers.se/";
     // static final String USERNAME = "tda357_nnn";
     // static final String PASSWORD = "yourPasswordGoesHere";
-
-
+    
     // This is the JDBC connection object you will be using in your methods.
     private Connection conn;
 
     public PortalConnection() throws SQLException, ClassNotFoundException {
-        this(DATABASE, USERNAME, PASSWORD);  
+        this(DATABASE, USERNAME, PASSWORD);
     }
 
     /**
-     *
-     * @param db URL for database
+     * @param db   URL for database
      * @param user DB user
-     * @param pwd DB password
+     * @param pwd  DB password
      * @throws SQLException
      * @throws ClassNotFoundException
      */
@@ -50,36 +48,14 @@ public class PortalConnection {
      * This method register students to a program provided
      * by the user.
      *
-     * @param student Student to register
+     * @param student    Student to register
      * @param courseCode code of course to register to
      * @return JSON document (as a String)
      */
-    public String register(String student, String courseCode){
+    public String register(String student, String courseCode) {
         // Prepare a statment to be excecuted on DB connection
-      try(PreparedStatement ps = conn.prepareStatement("INSERT INTO Registrations VALUES(?,?)");){
-          // Using wildcards we need to initate its values
-          ps.setString(1, student);
-          ps.setString(2, courseCode);
-          // Triggers prepared statement
-          ps.executeUpdate();
-      // returnt true if no error generated
-      return "{\"success\":true}";
-      // Here's a bit of useful code, use it or delete it 
-     } catch (SQLException e) {
-         return "{\"success\":false, \"error\":\""+getError(e)+"\"}";
-      }
-    }
-
-    /**
-     * This method unregister students to a program provided
-     * by the user.
-     *
-     * @param student Student to unregister
-     * @param courseCode code of course to register to
-     * @return JSON document (as a String)
-     */
-    public String unregister(String student, String courseCode){
-        try(PreparedStatement ps = conn.prepareStatement("DELETE FROM Registrations WHERE student = ? AND course = ?");){
+        try (PreparedStatement ps = conn.prepareStatement("INSERT INTO Registrations VALUES(?,?)");) {
+            // Using wildcards we need to initate its values
             ps.setString(1, student);
             ps.setString(2, courseCode);
             // Triggers prepared statement
@@ -87,7 +63,38 @@ public class PortalConnection {
             return "{\"success\":true}";
             // Here's a bit of useful code, use it or delete it
         } catch (SQLException e) {
-            return "{\"success\":false, \"error\":\""+getError(e)+"\"}";
+            return "{\"success\":false, \"error\":\"" + getError(e) + "\"}";
+        }
+    }
+
+    /**
+     * This method unregister students to a program provided
+     * by the user.
+     *
+     * @param student    Student to unregister
+     * @param courseCode code of course to register to
+     * @return JSON document (as a String)
+     */
+    public String unregister(String student, String courseCode) {
+        try (PreparedStatement ps = conn.prepareStatement("DELETE FROM Registrations WHERE student = ? AND course = ?");) {
+            ps.setString(1, student);
+            ps.setString(2, courseCode);
+            // Triggers prepared statement
+            ps.executeUpdate();
+            return "{\"success\":true}";
+        } catch (SQLException e) {
+            return "{\"success\":false, \"error\":\"" + getError(e) + "\"}";
+        }
+    }
+
+
+    public String voulnerability(String student, String courseCode) throws SQLException {
+        try (Statement st = conn.createStatement()) {
+            // courseCode  "x' OR 'a'='a" Will wipe out database.
+            st.executeUpdate("DELETE FROM Registrations WHERE student = '" + student + "' AND course = '" + courseCode + "';");
+            return "{\"success\":true}";
+        } catch (SQLException e) {
+            return "{\"success\":false, \"error\":\"" + getError(e) + "\"}";
         }
     }
 
@@ -115,9 +122,7 @@ public class PortalConnection {
                 "    'canGraduate',(SELECT qualified FROM PathToGraduation WHERe student = st.idnr) " +
                 "    ) AS jsondata FROM Students st WHERE st.idnr= ?");) {
 
-
             ps.setString(1, student);
-
             ResultSet rs = ps.executeQuery();
             if (rs.next())
                 return rs.getString("jsondata");
