@@ -47,7 +47,7 @@ public class TestPortal {
          pause();
 
          System.out.println("======== 5 ========");
-         prettyPrint(c.getInfo("2222222222"));
+         prettyPrint(c.getInfo("4444444444"));
 
 
 

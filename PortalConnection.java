@@ -99,10 +99,10 @@ public class PortalConnection {
         
         try(PreparedStatement stBasic = conn.prepareStatement(
             // replace this with something more useful
-            "SELECT jsonb_build_object('student',idnr,'name',name,'login',login,'program',program,'branch',branch)" +
+            "SELECT jsonb_build_object('student',idnr,'name',name,'login',login,'program',program,'branch',branch) " +
                     "AS jsondata FROM BasicInformation WHERE idnr=?"
             ); PreparedStatement stFinished = conn.prepareStatement(
-            "SELECT jsonb_build_object('course',Courses.name,'code',Courses.code,'credits',credits,'grade',grade)"+
+            "SELECT jsonb_build_object('course',Courses.name,'code',Courses.code,'credits',credits,'grade',grade) "+
                     "AS jsondata FROM Taken LEFT JOIN Courses ON Taken.course = Courses.code WHERE Taken.student=?"
             ); PreparedStatement stRegistered = conn.prepareStatement(
             "SELECT jsonb_build_object('course',Courses.name,'code',Registrations.course,'status',status," +
@@ -117,7 +117,9 @@ public class PortalConnection {
                     "'researchCredits',researchCredits,'totalCredits',totalCredits,'canGraduate',qualified) " +
                 "AS jsondata FROM PathToGraduation WHERE student=?"
             );){
-            
+
+            //kör json_agg för att få arrays
+
             stBasic.setString(1, student);
             stFinished.setString(1, student);
             stRegistered.setString(1, student);
@@ -128,11 +130,24 @@ public class PortalConnection {
             ResultSet rsRegistered = stRegistered.executeQuery();
             ResultSet rsPathToGrad = stPathToGrad.executeQuery();
 
-            if(rsBasic.next() && rsFinished.next() && rsRegistered.next() && rsPathToGrad.next())
-              return rsBasic.getString("jsondata") + rsFinished.getString("jsondata") +
-                      rsRegistered.getString("jsondata") + rsPathToGrad.getString("jsondata");
-            else
-              return "{\"student\":\"does not exist :(\"}";
+            String str123 = "[123456789]";
+            System.out.println(str123);
+            System.out.println( str123.substring( 1, str123.length() - 1 ) );
+
+            if(rsBasic.next() && rsFinished.next() && rsRegistered.next() && rsPathToGrad.next()) {
+                String basic = rsBasic.getString("jsondata");
+                basic = basic.substring( 1, basic.length() - 1 );
+                String finished = rsFinished.getString("jsondata");
+                //finished = finished.substring( 1, finished.length() - 1 ); //superfluous
+                String registered = rsRegistered.getString("jsondata");
+                //registered = registered.substring( 1, registered.length() - 1 ); //superfluous
+                String pathToGrad = rsPathToGrad.getString("jsondata");
+                pathToGrad = pathToGrad.substring( 1, pathToGrad.length() - 1 );
+
+                return "{" + basic + ", \"finished\": [ " + finished + "] " + ", \"registered\": [ " + registered + "], " +
+                        pathToGrad + "}";
+            } else
+                return "{\"student\":\"does not exist :(\"}";
             
         } 
     }
