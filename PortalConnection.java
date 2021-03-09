@@ -58,8 +58,6 @@ public class PortalConnection {
 
     // Unregister a student from a course, returns a tiny JSON document (as a String)
     public String unregister(String student, String courseCode){
-        //TODO: It won't give an error if the student is not registered/waiting or the
-        // course does not exist (i.e. 0 rows deleted)
         try(PreparedStatement ps = conn.prepareStatement(
                 "DELETE FROM Registrations WHERE student = ? AND course = ?")){
             ps.setString(1,student);
@@ -75,9 +73,13 @@ public class PortalConnection {
         } catch (SQLException e) {
             return "{\"success\":false, \"error\":\""+getError(e)+"\"}";
         }
+    }
 
-        /*
+    // Unregister a student from a course, returns a tiny JSON document (as a String)
+    public String unregisterFaulty(String student, String courseCode){
+        //SQL injection vulnerability
         String upd = "DELETE FROM Registrations WHERE student = '"+student+"' AND course = '"+courseCode+"'";
+        System.out.println("\n" + "VULNERABILITY QUERY: \n" + upd + "\n");
         try(Statement s = conn.createStatement()){
             int x = s.executeUpdate(upd);
             if (x < 0){
@@ -88,8 +90,13 @@ public class PortalConnection {
         } catch (SQLException e) {
             return "{\"success\":false, \"error\":\""+getError(e)+"\"}";
         }
-        */
+
     }
+
+
+
+
+
 
     // Return a JSON document containing lots of information about a student, it should validate against the schema
     // found in information_schema.json
@@ -136,8 +143,7 @@ public class PortalConnection {
 
                 String finished = rsFinished.getString("jsondata");
                 while(rsFinished.next()) {
-                    finished = finished + ", " + rsFinished.getString("jsondata");
-                    //finished = finished.substring( 1, finished.length() - 1 ); //superfluous
+                    finished = finished + "," + rsFinished.getString("jsondata");
                 }
 
                 String registered = rsRegistered.getString("jsondata");

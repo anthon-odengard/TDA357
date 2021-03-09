@@ -48,6 +48,14 @@ public class TestPortal {
 
          System.out.println("======== 5 ========");
          prettyPrint(c.getInfo("4444444444"));
+         System.out.println(" ");
+         pause();
+
+         /*
+         System.out.println("======== 6 ========");
+         String courseFaulty = " '; DELETE FROM Registrations WHERE student <> 'XXX ";
+         System.out.println(c.unregisterFaulty("XXX", courseFaulty));
+         */
 
 
 
