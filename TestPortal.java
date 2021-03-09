@@ -82,58 +82,6 @@ public class TestPortal {
          System.out.println(c.getRegistrations());
          System.out.println(" ");
 
-
-
-
-
-/*
-         System.out.println("======== 1A (pass) ========");
-         System.out.println(c.register("5555555555", "CCC111"));
-         System.out.println(" ");
-         //pause();
-
-         System.out.println("======== 1B (fail) ========"); //Student cannot register
-         System.out.println(c.register("5555555555", "CCC222"));
-         //System.out.println(" ");
-         pause();
-
-         System.out.println("======== 2 (pass) ========");
-         System.out.println(c.unregister("5555555555", "CCC111"));
-         //System.out.println(" ");
-         pause();
-
-         System.out.println("======== 3A (fail) ========"); //Student is not registered/waiting
-         System.out.println(c.unregister("5555555555", "CCC111"));
-         System.out.println(" ");
-         //pause();
-
-         System.out.println("======== 3B (fail) ========"); //Student doesn't exist
-         System.out.println(c.unregister("7777777777", "CCC111"));
-         System.out.println(" ");
-         //pause();
-
-         System.out.println("======== 3C (fail) ========"); //Course doesn't exist
-         System.out.println(c.unregister("5555555555", "CCC999"));
-         //System.out.println(" ");
-         pause();
-
-         System.out.println("======== 4 ========");
-         prettyPrint(c.getInfo("2222222222"));
-         System.out.println(" ");
-         pause();
-
-         System.out.println("======== 5 ========");
-         prettyPrint(c.getInfo("4444444444"));
-         System.out.println(" ");
-         pause();
-
-         System.out.println("======== 6 ========");
-         String courseVulnerable = " '; DELETE FROM Registrations WHERE student <> 'XXX ";
-         System.out.println(c.unregisterVulnerability("XXX", courseVulnerable));
-
-*/
-
-
       
       } catch (ClassNotFoundException e) {
          System.err.println("ERROR!\nYou do not have the Postgres JDBC driver (e.g. postgresql-42.2.18.jar) in your runtime classpath!");
